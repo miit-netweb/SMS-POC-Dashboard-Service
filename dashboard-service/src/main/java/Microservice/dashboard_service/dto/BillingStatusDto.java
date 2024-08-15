@@ -1,15 +1,13 @@
 package Microservice.dashboard_service.dto;
 
-import java.time.LocalDate;
-
-public class BillingStatus {
+public class BillingStatusDto {
     private String timeStamp;
     private String status;
 
-    public BillingStatus() {
+    public BillingStatusDto() {
     }
 
-    public BillingStatus(String timeStamp, String status) {
+    public BillingStatusDto(String timeStamp, String status) {
         this.timeStamp = timeStamp;
         this.status = status;
     }

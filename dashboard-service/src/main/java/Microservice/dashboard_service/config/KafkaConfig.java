@@ -1,8 +1,8 @@
 package Microservice.dashboard_service.config;
 
-import Microservice.dashboard_service.dto.BillingStatus;
-import Microservice.dashboard_service.dto.EmailStatus;
-import Microservice.dashboard_service.dto.EnrollmentStatus;
+import Microservice.dashboard_service.dto.BillingStatusDto;
+import Microservice.dashboard_service.dto.EmailStatusDto;
+import Microservice.dashboard_service.dto.EnrollmentStatusDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -43,14 +43,14 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, EmailStatus> consumerFactory() {
+    public ConsumerFactory<String, EmailStatusDto> consumerFactory() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "emails");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
         configs.put(JsonDeserializer.TRUSTED_PACKAGES, "*");  // Allow all packages, or specify if necessary
-        configs.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "Microservice.dashboard_service.dto.EmailStatus");  // Fully qualified class name
+        configs.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "Microservice.dashboard_service.dto.EmailStatusDto");  // Fully qualified class name
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         configs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         configs.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
@@ -60,14 +60,14 @@ public class KafkaConfig {
 
 
     @Bean
-    public ConsumerFactory<String, BillingStatus> consumerFactoryBilling() {
+    public ConsumerFactory<String, BillingStatusDto> consumerFactoryBilling() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "billings");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
         configs.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        configs.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "Microservice.dashboard_service.dto.BillingStatus");
+        configs.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "Microservice.dashboard_service.dto.BillingStatusDto");
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         configs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         configs.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
@@ -75,14 +75,14 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(configs);
     }
     @Bean
-    public ConsumerFactory<String, EnrollmentStatus> consumerFactoryEnrollment() {
+    public ConsumerFactory<String, EnrollmentStatusDto> consumerFactoryEnrollment() {
         Map<String, Object> configs = new HashMap<>();
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, "enrollments");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class.getName());
         configs.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        configs.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "Microservice.dashboard_service.dto.EnrollmentStatus");
+        configs.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "Microservice.dashboard_service.dto.EnrollmentStatusDto");
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         configs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
         configs.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
@@ -91,24 +91,24 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EmailStatus> kafkaListenerContainerFactoryEmail() {
-        ConcurrentKafkaListenerContainerFactory<String, EmailStatus> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, EmailStatusDto> kafkaListenerContainerFactoryEmail() {
+        ConcurrentKafkaListenerContainerFactory<String, EmailStatusDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setConcurrency(3);  // Number of concurrent consumers
         factory.getContainerProperties().setPollTimeout(3000);
         return factory;
     }
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, BillingStatus> kafkaListenerContainerFactoryBilling() {
-        ConcurrentKafkaListenerContainerFactory<String, BillingStatus> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, BillingStatusDto> kafkaListenerContainerFactoryBilling() {
+        ConcurrentKafkaListenerContainerFactory<String, BillingStatusDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryBilling());
         factory.setConcurrency(3);  // Number of concurrent consumers
         factory.getContainerProperties().setPollTimeout(3000);
         return factory;
     }
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EnrollmentStatus> kafkaListenerContainerFactoryEnrollment() {
-        ConcurrentKafkaListenerContainerFactory<String, EnrollmentStatus> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, EnrollmentStatusDto> kafkaListenerContainerFactoryEnrollment() {
+        ConcurrentKafkaListenerContainerFactory<String, EnrollmentStatusDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactoryEnrollment());
         factory.setConcurrency(3);  // Number of concurrent consumers
         factory.getContainerProperties().setPollTimeout(3000);
