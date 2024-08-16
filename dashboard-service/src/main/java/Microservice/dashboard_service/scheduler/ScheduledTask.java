@@ -38,7 +38,7 @@ public class ScheduledTask {
 		billlingConsumer.getBillingStatusList().clear();
 	}
 
-	@Scheduled(fixedDelay = 60000)
+	@Scheduled(fixedDelay = 6000)
 	public void insertEmailStatus() {
 		List<EmailStatus> emailStatusList = emailConsumer.getEmailStatusList();
 		emailRepo.saveAll(emailStatusList);

@@ -1,5 +1,7 @@
 package Microservice.dashboard_service.consumer;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,9 @@ public class EnrollmentStatusConsumer {
 	@KafkaListener(topics = "enrollment-status", groupId = "enrollments", containerFactory = "kafkaListenerContainerFactoryEnrollment")
 	public void consume(@Payload EnrollmentStatusDto enrollmentStatus) {
 		LOGGER.info("Consumed Enrollment: ");
-		EnrollmentStatus enrollmentEntity=EnrollmentStatus.builder().timeStamp(enrollmentStatus.getTimeStamp())
+		LocalDateTime localDateTime = LocalDateTime.parse(enrollmentStatus.getTimeStamp());
+		Timestamp timestamp = Timestamp.valueOf(localDateTime);
+		EnrollmentStatus enrollmentEntity=EnrollmentStatus.builder().timeStamp(timestamp)
 				.status(enrollmentStatus.getStatus()).build();
 		enrollmentStatusList.add(enrollmentEntity);
 		LOGGER.info("Consumed Enrollment Status: {}",enrollmentStatus);

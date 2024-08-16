@@ -1,5 +1,7 @@
 package Microservice.dashboard_service.consumer;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,9 @@ public class BillingConsumer {
 	@KafkaListener(topics = "billing-status", groupId = "billings", containerFactory = "kafkaListenerContainerFactoryBilling")
 	public void consume(BillingStatusDto billingStatus) {
 		LOGGER.info("Consumed Billing: ");
-		BillingStatus billingEntity = BillingStatus.builder().timeStamp(billingStatus.getTimeStamp())
+		LocalDateTime localDateTime = LocalDateTime.parse(billingStatus.getTimeStamp());
+		Timestamp timestamp = Timestamp.valueOf(localDateTime);
+		BillingStatus billingEntity = BillingStatus.builder().timeStamp(timestamp)
 				.status(billingStatus.getStatus()).build();
 		billingStatusList.add(billingEntity);
 		LOGGER.info("Comsumed Billing Status:{}", billingStatus);

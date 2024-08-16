@@ -1,5 +1,10 @@
 package Microservice.dashboard_service.consumer;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +25,9 @@ public class EmailConsumer {
 	@KafkaListener(topics = "email-status", groupId = "emails", containerFactory = "kafkaListenerContainerFactoryEmail")
 	public void consume(EmailStatusDto emailStatus) {
 		LOGGER.info("Consumed Email: ");
-		EmailStatus emailEntity = EmailStatus.builder().timeStamp(emailStatus.getTimeStamp())
+		LocalDateTime localDateTime = LocalDateTime.parse(emailStatus.getTimeStamp());
+		Timestamp timestamp = Timestamp.valueOf(localDateTime);
+		EmailStatus emailEntity = EmailStatus.builder().timeStamp(timestamp)
 				.status(emailStatus.getStatus()).build();
 		emailStatusList.add(emailEntity);
 		LOGGER.info("Consumed Email Status;{}", emailStatus);
