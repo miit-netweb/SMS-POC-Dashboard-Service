@@ -28,13 +28,12 @@ public class ScheduledTask {
 	private BillingStatusRepository billingRepo;
 	private EmailStatusRepository emailRepo;
 	private EnrollmentStatusRepository enrollmentRepo;
-	private static final String LOG_MESSAGE = "Email Updates Data to be inserted: {}";
 
 	@Scheduled(fixedDelay = 60000)
 	public void insertBillingStatus() {
 		List<BillingStatus> billingStatusList = billlingConsumer.getBillingStatusList();
 		billingRepo.saveAll(billingStatusList);
-		log.info(LOG_MESSAGE, billingStatusList);
+		log.info("Billing status Update Data to be inserted: {}", billingStatusList);
 		billlingConsumer.getBillingStatusList().clear();
 	}
 
@@ -42,7 +41,7 @@ public class ScheduledTask {
 	public void insertEmailStatus() {
 		List<EmailStatus> emailStatusList = emailConsumer.getEmailStatusList();
 		emailRepo.saveAll(emailStatusList);
-		log.info(LOG_MESSAGE, emailStatusList);
+		log.info("Email status Update Data to be inserted: {}", emailStatusList);
 		emailConsumer.getEmailStatusList().clear();
 	}
 
@@ -50,7 +49,7 @@ public class ScheduledTask {
 	public void insertEnrollmentStatus() {
 		List<EnrollmentStatus> enrollmentStatusList = enrollmentConsumer.getEnrollmentStatusList();
 		enrollmentRepo.saveAll(enrollmentStatusList);
-		log.info(LOG_MESSAGE, enrollmentStatusList);
+		log.info("Enrollment Status Update Data to be inserted: {}", enrollmentStatusList);
 		enrollmentConsumer.getEnrollmentStatusList().clear();
 	}
 }
