@@ -29,7 +29,7 @@ public class ScheduledTask {
 	private EmailStatusRepository emailRepo;
 	private EnrollmentStatusRepository enrollmentRepo;
 
-	@Scheduled(fixedDelay = 60000)
+	@Scheduled(fixedDelay = 6000)
 	public void insertBillingStatus() {
 		List<BillingStatus> billingStatusList = billlingConsumer.getBillingStatusList();
 		billingRepo.saveAll(billingStatusList);
@@ -45,7 +45,7 @@ public class ScheduledTask {
 		emailConsumer.getEmailStatusList().clear();
 	}
 
-	@Scheduled(fixedDelay = 60000)
+	@Scheduled(fixedDelay = 6000)
 	public void insertEnrollmentStatus() {
 		List<EnrollmentStatus> enrollmentStatusList = enrollmentConsumer.getEnrollmentStatusList();
 		enrollmentRepo.saveAll(enrollmentStatusList);
