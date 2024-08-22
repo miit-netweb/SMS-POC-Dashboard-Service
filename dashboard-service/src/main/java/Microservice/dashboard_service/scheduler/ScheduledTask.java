@@ -2,6 +2,8 @@ package Microservice.dashboard_service.scheduler;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @AllArgsConstructor
 public class ScheduledTask {
-	
+
 	private BillingConsumer billlingConsumer;
 	private EmailConsumer emailConsumer;
 	private EnrollmentStatusConsumer enrollmentConsumer;
@@ -29,27 +31,36 @@ public class ScheduledTask {
 	private EmailStatusRepository emailRepo;
 	private EnrollmentStatusRepository enrollmentRepo;
 
-	@Scheduled(fixedDelay = 6000)
+	@Autowired
+	private RedisTemplate<String, EmailStatus> redisTemplate;
+	private static final String REDIS_LIST_KEY_EMAIL = "emailStatusList";
+	private static final String REDIS_LIST_KEY_BILLING = "billingStatusList";
+	private static final String REDIS_LIST_KEY_ENROLL = "enrollStatusList";
+
+	@Scheduled(fixedDelay = 60000)
 	public void insertBillingStatus() {
 		List<BillingStatus> billingStatusList = billlingConsumer.getBillingStatusList();
+		log.info("Consumed From Redis:{}",billingStatusList);	
 		billingRepo.saveAll(billingStatusList);
 		log.info("Billing status Update Data to be inserted: {}", billingStatusList);
-		billlingConsumer.getBillingStatusList().clear();
+		redisTemplate.delete(REDIS_LIST_KEY_BILLING);
 	}
 
-	@Scheduled(fixedDelay = 6000)
+	@Scheduled(fixedDelay = 60000)
 	public void insertEmailStatus() {
-		List<EmailStatus> emailStatusList = emailConsumer.getEmailStatusList();
-		emailRepo.saveAll(emailStatusList);
-		log.info("Email status Update Data to be inserted: {}", emailStatusList);
-		emailConsumer.getEmailStatusList().clear();
+		List<EmailStatus> emailStatuses = emailConsumer.getEmailStatusList();
+		log.info("Consumed From Redis:{}",emailStatuses);
+		emailRepo.saveAll(emailStatuses);
+		log.info("Billing status Update Data to be inserted: {}", emailStatuses);
+		redisTemplate.delete(REDIS_LIST_KEY_EMAIL);
 	}
 
-	@Scheduled(fixedDelay = 6000)
+	@Scheduled(fixedDelay = 60000)
 	public void insertEnrollmentStatus() {
 		List<EnrollmentStatus> enrollmentStatusList = enrollmentConsumer.getEnrollmentStatusList();
+		log.info("Consumed From Redis:{}",enrollmentStatusList);
 		enrollmentRepo.saveAll(enrollmentStatusList);
 		log.info("Enrollment Status Update Data to be inserted: {}", enrollmentStatusList);
-		enrollmentConsumer.getEnrollmentStatusList().clear();
+		redisTemplate.delete(REDIS_LIST_KEY_ENROLL);
 	}
 }
